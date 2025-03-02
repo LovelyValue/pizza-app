@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { lazy, StrictMode } from 'react';
+import { lazy, StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { PREFIX } from './helpers/API.ts';
@@ -19,7 +19,11 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: '/',
-				element: <Menu />,
+				element: (
+					<Suspense fallback={<>Loading...</>}>
+						<Menu />
+					</Suspense>
+				),
 			},
 			{
 				path: '/cart',
