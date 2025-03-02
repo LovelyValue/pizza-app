@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { StrictMode } from 'react';
+import { lazy, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { PREFIX } from './helpers/API.ts';
@@ -7,8 +7,10 @@ import './index.css';
 import { Layout } from './layout/Layout/Layout.tsx';
 import { Cart } from './pages/Cart/Cart.tsx';
 import { Error as ErrorPage } from './pages/Error/Error.tsx';
-import { Menu } from './pages/Menu/Menu.tsx';
+
 import { Product } from './pages/Product/Product.tsx';
+
+const Menu = lazy(() => import('./pages/Menu/Menu'));
 
 const router = createBrowserRouter([
 	{
