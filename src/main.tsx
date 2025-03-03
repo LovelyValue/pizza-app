@@ -7,7 +7,6 @@ import './index.css';
 import { Layout } from './layout/Layout/Layout.tsx';
 import { Cart } from './pages/Cart/Cart.tsx';
 import { Error as ErrorPage } from './pages/Error/Error.tsx';
-
 import { Product } from './pages/Product/Product.tsx';
 
 const Menu = lazy(() => import('./pages/Menu/Menu'));
@@ -34,13 +33,12 @@ const router = createBrowserRouter([
 				element: <Product />,
 				errorElement: <>Ошибка</>,
 				loader: async ({ params }) => {
-					await new Promise<void>(resolve => {
-						setTimeout(() => {
-							resolve();
-						}, 0.5);
-					});
-					const { data } = await axios.get(`${PREFIX}/products/${params.id}`);
-					return data;
+					return axios
+						.get(`${PREFIX}/products/${params.id}`)
+						.then(response => ({ data: response.data }))
+						.catch(e => {
+							console.log(e);
+						});
 				},
 			},
 		],
