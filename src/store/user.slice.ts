@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { PREFIX } from '../helpers/API';
 import { LoginResponse } from '../interfaces/auth.interface';
@@ -12,23 +12,31 @@ export interface UserPersistentState {
 
 export interface UserState {
 	jwt: string | null;
-	loginState: null | 'rejected';
+	loginErrorMessage?: string;
 }
 
 const initialState: UserState = {
 	jwt: loadState<UserPersistentState>(JWT_PERSISTENT_STATE)?.jwt ?? null,
-	loginState: null,
 };
 
 export const login = createAsyncThunk(
 	'user/login',
-	async (params: { email: string; password: string }) => {
-		const { data } = await axios.post<LoginResponse>(`${PREFIX}/auth/login`, {
-			email: params.email,
-			password: params.password,
-		});
+	async (params: { email: string; password: string }, { rejectWithValue }) => {
+		try {
+			const { data } = await axios.post<LoginResponse>(`${PREFIX}/auth/login`, {
+				email: params.email,
+				password: params.password,
+			});
 
-		return data;
+			return data;
+		} catch (e) {
+			if (axios.isAxiosError(e)) {
+				return rejectWithValue(
+					e.response?.data?.message || 'Ошибка авторизации'
+				);
+			}
+			return rejectWithValue('Неизвестная ошибка');
+		}
 	}
 );
 
@@ -39,15 +47,21 @@ export const userSlice = createSlice({
 		logout: state => {
 			state.jwt = null;
 		},
+		clearLoginError: state => {
+			state.loginErrorMessage = undefined;
+		},
 	},
 	extraReducers: builder => {
-		builder.addCase(
-			login.fulfilled,
-			(state, action: PayloadAction<LoginResponse>) => {
-				state.jwt = action.payload.access_token;
+		builder.addCase(login.fulfilled, (state, action) => {
+			if (!action.payload) {
+				return;
 			}
-		);
-		builder.addCase(login.rejected, (state, error) => {});
+			state.jwt = action.payload.access_token;
+			state.loginErrorMessage = undefined; // Очищаем ошибку при успешном входе
+		});
+		builder.addCase(login.rejected, (state, action) => {
+			state.loginErrorMessage = action.payload as string;
+		});
 	},
 });
 
