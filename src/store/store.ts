@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
+import cartReducer from './cart.slice'; // исправлен импорт
 import { saveState } from './storage';
 import userReducer, { JWT_PERSISTENT_STATE } from './user.slice';
 
 export const store = configureStore({
 	reducer: {
-		user: userReducer, // Передаём userSlice.reducer
+		user: userReducer,
+		cart: cartReducer,
 	},
 });
 
