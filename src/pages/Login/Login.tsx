@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../components/Button/Button';
 import Heading from '../../components/Heading/Heading';
 import Input from '../../components/Input/Input';
-import { AppDispatch, RootState } from '../../store/store'; // Правильный импорт
+import { AppDispatch, RootState } from '../../store/store'; // т
 import { login, userActions } from '../../store/user.slice';
 import styles from './Login.module.css';
 
@@ -44,10 +44,9 @@ export function Login() {
 				<div className={styles['field']}>
 					<label htmlFor='email'>Ваш email</label>
 					<Input id='email' placeholder='Email' name='email' />{' '}
-					{/* Исправлен name */}
 				</div>
 				<div className={styles['field']}>
-					<label htmlFor='password'>Ваш пароль</label> {/* Исправлен текст */}
+					<label htmlFor='password'>Ваш пароль</label>
 					<Input
 						id='password'
 						type='password'

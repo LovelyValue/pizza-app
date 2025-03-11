@@ -15,6 +15,7 @@ export interface UserPersistentState {
 export interface UserState {
 	jwt: string | null;
 	loginErrorMessage?: string;
+	registerErrorMessage?: string;
 	profile?: Profile;
 }
 
@@ -30,6 +31,33 @@ export const login = createAsyncThunk(
 				email: params.email,
 				password: params.password,
 			});
+
+			return data;
+		} catch (e) {
+			if (axios.isAxiosError(e)) {
+				return rejectWithValue(
+					e.response?.data?.message || 'Ошибка авторизации'
+				);
+			}
+			return rejectWithValue('Неизвестная ошибка');
+		}
+	}
+);
+export const register = createAsyncThunk(
+	'user/register',
+	async (
+		params: { email: string; password: string; name: string },
+		{ rejectWithValue }
+	) => {
+		try {
+			const { data } = await axios.post<LoginResponse>(
+				`${PREFIX}/auth/register`,
+				{
+					email: params.email,
+					password: params.password,
+					name: params.name,
+				}
+			);
 
 			return data;
 		} catch (e) {
@@ -67,6 +95,9 @@ export const userSlice = createSlice({
 		clearLoginError: state => {
 			state.loginErrorMessage = undefined;
 		},
+		clearRegisterError: state => {
+			state.registerErrorMessage = undefined;
+		},
 	},
 	extraReducers: builder => {
 		builder.addCase(login.fulfilled, (state, action) => {
@@ -74,11 +105,25 @@ export const userSlice = createSlice({
 				return;
 			}
 			state.jwt = action.payload.access_token;
-			state.loginErrorMessage = undefined; // Очищаем ошибку при успешном входе
+			state.loginErrorMessage = undefined;
 		});
+
 		builder.addCase(login.rejected, (state, action) => {
 			state.loginErrorMessage = action.payload as string;
 		});
+
+		builder.addCase(register.fulfilled, (state, action) => {
+			if (!action.payload) {
+				return;
+			}
+			state.jwt = action.payload.access_token;
+			state.registerErrorMessage = undefined;
+		});
+
+		builder.addCase(register.rejected, (state, action) => {
+			state.registerErrorMessage = action.payload as string;
+		});
+
 		builder.addCase(getProfile.fulfilled, (state, action) => {
 			state.profile = action.payload;
 		});
