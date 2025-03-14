@@ -1,11 +1,14 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import Button from '../../components/Button/Button';
 import CartItem from '../../components/CartItem/CartItem';
 import Heading from '../../components/Heading/Heading';
 import { PREFIX } from '../../helpers/API';
 import { Product } from '../../interfaces/product.interface';
-import { RootState } from '../../store/store';
+import { cartActions } from '../../store/cart.slice';
+import { AppDispatch, RootState } from '../../store/store';
 import styles from './Cart.module.css';
 
 const DELIVERY_FEE = 169;
@@ -13,6 +16,10 @@ const DELIVERY_FEE = 169;
 export function Cart() {
 	const [cartProducts, setCartProducts] = useState<Product[]>([]);
 	const items = useSelector((s: RootState) => s.cart.items);
+	const jwt = useSelector((s: RootState) => s.user.jwt);
+	const dispatch = useDispatch<AppDispatch>();
+	const navigate = useNavigate();
+
 	const total = items
 		.map(i => {
 			const product = cartProducts.find(p => p.id === i.id);
@@ -31,6 +38,22 @@ export function Cart() {
 	const loadAllItems = async () => {
 		const res = await Promise.all(items.map(i => getItem(i.id)));
 		setCartProducts(res);
+	};
+
+	const checkout = async () => {
+		await axios.post(
+			`${PREFIX}/order`,
+			{
+				products: items,
+			},
+			{
+				headers: {
+					Authorization: `Bearer ${jwt}`,
+				},
+			}
+		);
+		dispatch(cartActions.clean());
+		navigate('/success');
 	};
 
 	useEffect(() => {
@@ -62,10 +85,17 @@ export function Cart() {
 			</div>
 			<hr className={styles['hr']} />
 			<div className={styles['line']}>
-				<div className={styles['text']}>Итог {items.length}</div>
+				<div className={styles['text']}>
+					Итог <span className={styles['total-count']}>({items.length})</span>
+				</div>
 				<div className={styles['price']}>
 					{total + DELIVERY_FEE}&nbsp;<span>₽</span>
 				</div>
+			</div>
+			<div className={styles['checkout']}>
+				<Button appearance='big' onClick={checkout}>
+					Оформить
+				</Button>
 			</div>
 		</>
 	);
