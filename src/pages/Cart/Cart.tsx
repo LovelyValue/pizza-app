@@ -15,9 +15,13 @@ const DELIVERY_FEE = 169;
 
 export function Cart() {
 	const [cartProducts, setCartProducts] = useState<Product[]>([]);
+
 	const items = useSelector((s: RootState) => s.cart.items);
+
 	const jwt = useSelector((s: RootState) => s.user.jwt);
+
 	const dispatch = useDispatch<AppDispatch>();
+
 	const navigate = useNavigate();
 
 	const total = items
@@ -53,6 +57,7 @@ export function Cart() {
 			}
 		);
 		dispatch(cartActions.clean());
+
 		navigate('/success');
 	};
 

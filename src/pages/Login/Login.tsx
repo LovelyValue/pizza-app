@@ -15,14 +15,10 @@ export type LoginForm = {
 
 export function Login() {
 	const navigate = useNavigate();
-	const dispatch = useDispatch<AppDispatch>();
-	const { jwt, loginErrorMessage } = useSelector((s: RootState) => s.user); // Правильный `useSelector`
 
-	useEffect(() => {
-		if (jwt) {
-			navigate('/');
-		}
-	}, [jwt, navigate]);
+	const dispatch = useDispatch<AppDispatch>();
+
+	const { jwt, loginErrorMessage } = useSelector((s: RootState) => s.user);
 
 	const submit = async (e: FormEvent) => {
 		e.preventDefault();
@@ -33,6 +29,12 @@ export function Login() {
 
 		dispatch(login({ email: email.value, password: password.value })); // Убрали лишнюю функцию
 	};
+
+	useEffect(() => {
+		if (jwt) {
+			navigate('/');
+		}
+	}, [jwt, navigate]);
 
 	return (
 		<div className={styles['login']}>

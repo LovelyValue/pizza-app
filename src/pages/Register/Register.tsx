@@ -16,14 +16,10 @@ export type RegisterForm = {
 
 export function Register() {
 	const navigate = useNavigate();
-	const dispatch = useDispatch<AppDispatch>();
-	const { jwt, registerErrorMessage } = useSelector((s: RootState) => s.user);
 
-	useEffect(() => {
-		if (jwt) {
-			navigate('/');
-		}
-	}, [jwt, navigate]);
+	const dispatch = useDispatch<AppDispatch>();
+
+	const { jwt, registerErrorMessage } = useSelector((s: RootState) => s.user);
 
 	const submit = async (e: FormEvent) => {
 		e.preventDefault();
@@ -40,6 +36,12 @@ export function Register() {
 			})
 		);
 	};
+
+	useEffect(() => {
+		if (jwt) {
+			navigate('/');
+		}
+	}, [jwt, navigate]);
 
 	return (
 		<div className={styles['login']}>

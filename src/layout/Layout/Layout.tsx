@@ -9,20 +9,23 @@ import styles from './Layout.module.css';
 
 export function Layout() {
 	const navigate = useNavigate();
+
 	const dispatch = useDispatch<AppDispatch>();
+
 	const profile = useSelector((s: RootState) => s.user.profile);
+
 	const items = useSelector((s: RootState) => s.cart.items);
 
-	useEffect(() => {
-		dispatch(getProfile());
-	}, [dispatch]);
+	const cartCount = items.reduce((acc, item) => acc + item.count, 0);
 
 	const logout = () => {
 		dispatch(userActions.logout());
 		navigate('/auth/login');
 	};
 
-	const cartCount = items.reduce((acc, item) => acc + item.count, 0);
+	useEffect(() => {
+		dispatch(getProfile());
+	}, [dispatch]);
 
 	return (
 		<div className={styles['layout']}>

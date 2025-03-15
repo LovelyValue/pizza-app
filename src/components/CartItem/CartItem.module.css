@@ -52,6 +52,7 @@
 	border-radius: 50%;
 	width: 28px;
 	height: 28px;
+	cursor: pointer;
 }
 
 .plus {
@@ -61,8 +62,9 @@
 	background: var(--primary-color);
 	border: 1px solid var(--primary-color);
 	border-radius: 50%;
-	width: 29px;
-	height: 29px;
+	width: 28px;
+	height: 28px;
+	cursor: pointer;
 }
 
 .remove {
@@ -72,8 +74,9 @@
 	background: none;
 	border: none;
 	border-radius: 50%;
-	width: 29px;
-	height: 29px;
+	width: 28px;
+	height: 28px;
+	cursor: pointer;
 }
 
 .number {

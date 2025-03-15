@@ -4,18 +4,17 @@ import Heading from '../../components/Heading/Heading';
 import Search from '../../components/Search/Search';
 import { PREFIX } from '../../helpers/API';
 import { Product } from '../../interfaces/product.interface';
+import { MenuList } from '../MenuList/MenuList';
 import styles from './Menu.module.css';
-import { MenuList } from './MenuList/MenuList';
 
 function Menu() {
 	const [products, setProducts] = useState<Product[]>([]);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [error, setError] = useState<string | undefined>();
-	const [filter, setFilter] = useState<string>();
 
-	useEffect(() => {
-		getMenu(filter);
-	}, [filter]);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+
+	const [error, setError] = useState<string | undefined>();
+
+	const [filter, setFilter] = useState<string>();
 
 	const getMenu = async (name?: string) => {
 		try {
@@ -39,6 +38,10 @@ function Menu() {
 	const updateFilter = (e: ChangeEvent<HTMLInputElement>) => {
 		setFilter(e.target.value);
 	};
+
+	useEffect(() => {
+		getMenu(filter);
+	}, [filter]);
 
 	return (
 		<>

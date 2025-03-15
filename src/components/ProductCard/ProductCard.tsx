@@ -7,8 +7,8 @@ import { ProductCardProps } from './ProductCard.props';
 
 function ProductCard(props: ProductCardProps) {
 	const dispatch = useDispatch<AppDispatch>();
+
 	const add = (e: React.MouseEvent<HTMLButtonElement>) => {
-		//
 		e.preventDefault();
 		dispatch(cartActions.add(props.id));
 	};

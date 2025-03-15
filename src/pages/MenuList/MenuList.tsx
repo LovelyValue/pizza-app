@@ -1,4 +1,4 @@
-import ProductCard from '../../../components/ProductCard/ProductCard';
+import ProductCard from '../../components/ProductCard/ProductCard';
 import styles from './MenuList.module.css';
 import { MenuListProps } from './MenuList.props';
 
